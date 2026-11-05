@@ -4,7 +4,9 @@
 
 上游那句话是 **"why many token when few do trick"**：同一句修复，普通 agent 写 63 token，caveman 写 20 token，代码、命令、路径、报错字符一个不改。
 
-> ⚠️ **许可证更正：caveman 不是 MIT。** 3.0.0 起整个仓库是 **Apache-2.0**；根目录 `LICENSE-MIT` 只是保留 3.0.0 之前 MIT 部分的历史贡献声明。Apache-2.0 允许改造与分发，但要求随包带 `LICENSE`、保留 `NOTICE`、声明修改——本包逐条做到了，见 [NOTICE](NOTICE) 与下文「Apache-2.0 要求与逐条落实」。另外 "Caveman" 是 Julius Brussee 的商标：本包是**非官方移植**，用名称只做指称（nominative use），不暗示官方背书。
+> **许可证：Apache-2.0。** 上游 3.0.0 起统一采用 Apache-2.0（根目录 `LICENSE-MIT` 仅用于保留 3.0.0 之前 MIT 部分的历史贡献声明）。改造与分发需随包带 `LICENSE`、保留 `NOTICE`、声明修改——本包逐条做到了，见 [NOTICE](NOTICE) 与下文「Apache-2.0 要求与逐条落实」。
+>
+> **非官方移植。** "Caveman" 是 Julius Brussee 的商标，本包与上游作者无隶属或背书关系，仅以指称方式（nominative use）说明移植来源。
 
 ---
 
@@ -88,7 +90,7 @@ npm test        # 三组一起跑
 
 ## Apache-2.0 要求与逐条落实
 
-Apache-2.0 比 MIT 多的义务，逐条对应到本包：
+Apache-2.0 的关键义务，逐条对应到本包：
 
 | 条款 | 要求 | 本包做法 |
 | --- | --- | --- |
