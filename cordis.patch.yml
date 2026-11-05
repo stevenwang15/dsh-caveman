@@ -1,0 +1,8 @@
+# dsh-caveman bundle layer.
+#
+# Inserts this package's plugin row into the profile composition. The plugin (index.js)
+# exports name = "caveman" and inject = ["skills"], and registers the seven caveman skills
+# through ctx.skills.register with a directory resource base per skill under skills/.
+- insert:
+    - id: caveman
+      name: dsh-caveman

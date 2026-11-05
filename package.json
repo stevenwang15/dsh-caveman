@@ -1,0 +1,58 @@
+{
+  "name": "dsh-caveman",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 插件：把 caveman（让 agent 少说废话、省 token 的输出风格技能）移植为原生 DSH 技能——caveman / ultracave / megacave 三档语气、caveman-commit 提交信息、caveman-review 代码评审、caveman-help 速查、caveman-stats 用量。技术事实、代码、命令、路径与报错一律原样保留。",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "skills/",
+    "NOTICE",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "skill",
+    "caveman",
+    "tokens",
+    "terse",
+    "output-style"
+  ],
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node test/smoke.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "caveman": {
+    "upstream": "https://github.com/JuliusBrussee/caveman",
+    "upstreamVersion": "2.2.0",
+    "upstreamCommit": "2e068f735253cce28256744804785f01887d9646",
+    "upstreamLicense": "Apache-2.0",
+    "upstreamSkills": [
+      "caveman",
+      "ultracave",
+      "megacave",
+      "caveman-commit",
+      "caveman-review",
+      "caveman-help",
+      "caveman-stats"
+    ],
+    "notPorted": [
+      "CLI / proxy / engine / MCP（Go 运行时，省的是输入 token；DSH 侧未移植）",
+      "caveman-compress（依赖 Python 脚本 + 外部模型端点）",
+      "caveman-discover / explore / learn / manage / optimize / setup / evidence-review（依赖 Caveman CLI 与本地实验数据）",
+      "hooks 驱动的模式持久化与 statusline（DSH 无 hooks，改为会话内保持 + 诚实报告）"
+    ]
+  }
+}

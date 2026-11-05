@@ -1,0 +1,30 @@
+Caveman
+Copyright 2026 Julius Brussee
+
+This package (dsh-caveman) is an unofficial DeepSeek Harness port of
+https://github.com/JuliusBrussee/caveman, pinned at commit
+2e068f735253cce28256744804785f01887d9646 (upstream skill pack 2.2.0).
+
+The files under skills/ are copied verbatim from the upstream repository at that
+commit (the body of each SKILL.md). The upstream project is licensed under the
+Apache License, Version 2.0; a copy of that license ships as LICENSE in this
+package. Upstream keeps the pre-3.0.0 MIT notice in LICENSE-MIT for historical
+contributions; nothing under skills/ in this package is drawn from the
+engine/proxy/runtime code.
+
+Modifications made by this port (Apache-2.0 §4(b) "state changes"):
+
+- index.js: new file. Registers the upstream skill bodies with the DeepSeek
+  Harness skill registry and APPENDS a "DSH runtime" section to each body at
+  load time. The note states host facts the upstream text assumes differently:
+  DSH has no caveman hook, so the active mode is conversational and is not
+  stored anywhere; status answers must be marked "(not tracked by this host)";
+  usage/savings are unmeasured on this host.
+- package.json, cordis.patch.yml, README.md, test/, scripts/: new files; the DSH
+  bundle layer, packaging, tests and installer. No upstream code.
+- Not ported: the upstream CLI, proxy, engine, MCP server, Go runtime, hooks and
+  the host-specific skills that depend on them (see package.json "caveman").
+
+"Caveman" and Caveman logos are trademarks of Julius Brussee. This package is
+not affiliated with or endorsed by the upstream author; it uses the name
+nominatively to say what it ports, as allowed by upstream's TRADEMARKS.md.
