@@ -22,9 +22,14 @@ if [ ! -f "$PNPM" ]; then echo "error: pnpm not found at $PNPM (set DSH_PNPM)" >
 if [ ! -d "$PROFILE" ]; then echo "error: profile not found: $PROFILE" >&2; exit 1; fi
 
 VERSION="$("$NODE" -p "require('$PKG_ROOT/package.json').version")"
-TARBALL="$PKG_ROOT/dsh-caveman-$VERSION.tgz"
+TARBALL="${2:-$PKG_ROOT/dsh-caveman-$VERSION.tgz}"
 if [ ! -f "$TARBALL" ]; then
-  echo "error: $TARBALL missing. Run: (cd \"$PKG_ROOT\" && npm pack)" >&2
+  echo "no tarball at $TARBALL — building one with npm pack"
+  ( cd "$PKG_ROOT" && npm pack --cache "${npm_config_cache:-/tmp/npmcache}" --no-audit --no-fund >/dev/null )
+fi
+TARBALL="$(cd "$(dirname "$TARBALL")" && pwd)/$(basename "$TARBALL")"
+if [ ! -f "$TARBALL" ]; then
+  echo "error: npm pack did not produce $TARBALL" >&2
   exit 1
 fi
 

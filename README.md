@@ -60,19 +60,51 @@
 
 **没移植**（依赖上游 Go 运行时或 subagent preset）：`cavecrew`（要 cavecrew-* 三个 preset）、`caveman-discover/explore/learn/manage/optimize/setup/evidence-review`（要 Caveman CLI 与本地实验数据）、以及 CLI/proxy/engine/MCP/shrink。
 
-## 安装
+## 安装（从 GitHub 装，不需要 npm）
+
+`dsh-caveman` 这个名字在 npm 上已被另一个作者的同名插件占用，因此本包**不发布 npm**，GitHub 就是分发渠道。DSH 的插件安装本来就接受 `file:` / git / URL 三种 spec，下面三种方式任选。
+
+### 方式 A：一行脚本（推荐）
 
 ```bash
-cd dsh-caveman
-npm pack                                   # 生成 dsh-caveman-0.2.1.tgz
-./scripts/install-local.sh desktop         # 备份 profile → pnpm add → 加进 dsh.profile.bundles
+curl -fsSL -o /tmp/dsh-caveman-install.sh \
+  https://raw.githubusercontent.com/stevenwang15/dsh-caveman/main/scripts/install-from-github.sh
+bash /tmp/dsh-caveman-install.sh desktop     # 默认 profile 是 desktop
 ```
 
-装完**不用重启**：DSH 的 HMR 会在 profile 配置变化时重排组合并重新加载 bundle。实测发现**只改 package.json 的 bundle 列表不会重载模块**（宿主仍持有旧实例），改 `cordis.patch.yml` 才会——`scripts/dev-reload.sh` 就是干这个的，它会清理并刷新一行标记注释。卸载：
+脚本会：下载对应 release 的 tgz → 备份 profile 的 `package.json`/`cordis.patch.yml`/`pnpm-lock.yaml` → `pnpm add file:<tgz>` → 把 `dsh-caveman` 加进 `dsh.profile.bundles` → 触发一次配置变更让运行中的 DSH 重载。指定版本：`bash /tmp/dsh-caveman-install.sh desktop 0.2.2`。
+
+### 方式 B：直接从 git 仓库装
 
 ```bash
+PROFILE=~/.dsh/profiles/desktop
+NODE=~/.dsh/dsh-runtimes/dsh-primary-runtime/dependencies/node/bin/node
+PNPM=~/.dsh/dsh-runtimes/dsh-primary-runtime/dependencies/pnpm/bin/pnpm.mjs
+
+cd "$PROFILE"
+"$NODE" "$PNPM" add "github:stevenwang15/dsh-caveman" --config.confirmModulesPurge=false
+# 再把 "dsh-caveman" 加进 package.json 的 dsh.profile.bundles
+```
+
+DSH 的 pnpm 会从 GitHub 拉源码（本机实测约 3 分钟，无需 token），装出来的内容和 release 一致。缺点是每次更新要重跑一次 `pnpm add`。
+
+### 方式 C：克隆仓库后本地装
+
+```bash
+git clone --depth 1 https://github.com/stevenwang15/dsh-caveman.git /tmp/dsh-caveman
+/tmp/dsh-caveman/scripts/install-local.sh desktop
+```
+
+`install-local.sh` 没有现成 tgz 时会自己 `npm pack`（npm 缓存不可写时自动换到临时目录），然后走同一套备份 → `pnpm add` → 加 bundle → 触发热重载的流程。
+
+### 卸载
+
+```bash
+# 方式 A 装的最省事：
 ./scripts/uninstall-local.sh desktop
 ```
+
+装完**不用重启**：DSH 的 HMR 会在 profile 配置变化时重排组合并重新加载 bundle。实测发现**只改 package.json 的 bundle 列表不会重载模块**（宿主仍持有旧实例），改 `cordis.patch.yml` 才会——安装脚本和 `scripts/dev-reload.sh` 都会刷新一行可删除的标记注释来触发。卸载脚本会恢复安装时备份的三个文件，并移除 `node_modules/dsh-caveman`。
 
 ## 验证（已完成，可复跑）
 
@@ -115,6 +147,7 @@ dsh-caveman/
 │   ├── caveman-compress/SKILL.md          # 唯一改造文件（头部已标明 ADAPTED）
 │   ├── caveman-compress/scripts/verify-compress.mjs  # 压缩闸门
 │   └── native-core.md           # 上游 native 组共享默认（逐字）
+├── scripts/install-from-github.sh  # 从 GitHub release 直装（含热重载）
 ├── scripts/install-local.sh / uninstall-local.sh
 ├── test/smoke.mjs · dsh-contract.mjs · compress-gate.mjs
 ├── LICENSE  # Apache-2.0 全文

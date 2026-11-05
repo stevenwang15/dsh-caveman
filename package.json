@@ -1,6 +1,6 @@
 {
   "name": "dsh-caveman",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "DeepSeek Harness 插件：把 caveman（让 agent 少说废话、省 token 的输出风格技能）整套移植为原生 DSH 技能——三档语气（caveman/ultracave/megacave）、commit、review、help、stats、compress，外加 6 个 native 工作流纪律技能。技术事实、代码、命令、路径与报错一律原样保留。",
   "type": "module",
   "main": "index.js",
@@ -8,6 +8,9 @@
     "index.js",
     "cordis.patch.yml",
     "skills/",
+    "scripts/install-from-github.sh",
+    "scripts/install-local.sh",
+    "scripts/uninstall-local.sh",
     "NOTICE",
     "LICENSE",
     "README.md"
