@@ -1,30 +1,120 @@
+dsh-caveman — unofficial DeepSeek Harness port of Caveman
+
+Copyright 2026 the dsh-caveman contributors.
+Caveman Copyright 2026 Julius Brussee.
+
+This package is licensed under the Apache License, Version 2.0 (see LICENSE). It is
+an unofficial port; it is not affiliated with or endorsed by the upstream author.
+"Caveman" and Caveman logos are trademarks of Julius Brussee. The Apache License
+grants no trademark rights. The name is used nominatively, to state what this
+package ports, as upstream's TRADEMARKS.md allows.
+
+What this package redistributes
+-------------------------------
+The files under skills/ are the upstream skill bodies, copied verbatim from
+https://github.com/JuliusBrussee/caveman at commit
+2e068f735253cce28256744804785f01887d9646 (upstream skill pack 2.2.0), with one
+exception noted under "State changes": skills/caveman-compress/SKILL.md is adapted.
+skills/native-core.md is upstream's skills/native/native-core.md, verbatim.
+
+No code from upstream's CLI, proxy, engine, browse, MCP server, shrink, cavemem
+or extension is redistributed here. The third-party attributions in the upstream
+NOTICE (below) relate to that code, not to the skill texts.
+
+State changes (Apache License 2.0, section 4(b))
+-----------------------------------------------
+- index.js (new file): registers the upstream skill bodies with the DeepSeek
+  Harness skill registry and APPENDS a "DSH runtime" section to each body at load
+  time. That note states host facts upstream assumes differently: DSH has no
+  caveman hook, so the active mode is conversational and is not stored; status
+  answers must be marked "(not tracked by this host)"; usage and savings are
+  unmeasured on this host; DSH has no task classifier, so the native-pack skills
+  are model-invocable rather than classifier-gated.
+- skills/caveman-compress/SKILL.md (ADAPTED FILE, marked in its header): upstream
+  ships a Python CLI that sends the file's text to the `claude` CLI, the Anthropic
+  API or an OpenAI-compatible endpoint. This port removes the external endpoint and
+  the Python script; the session's own model rewrites the file locally, the backup
+  goes to .caveman/backups/ outside the source tree, and
+  scripts/verify-compress.mjs gates the overwrite. The compression rules and the
+  list of preserved constructs are upstream's.
+- scripts/verify-compress.mjs (new file), test/, README.md, NOTICE, package.json,
+  cordis.patch.yml, scripts/install-local.sh, scripts/uninstall-local.sh: new
+  files for packaging, the local backup/gate workflow, the DSH bundle layer, tests
+  and installation. No upstream code.
+- Not ported: upstream's CLI, proxy, engine, MCP server and the skills that depend
+  on them (cavecrew, caveman-discover, caveman-explore, caveman-learn,
+  caveman-manage, caveman-optimize, caveman-setup, caveman-evidence-review). See
+  the "caveman" field in package.json.
+
+Apache License 2.0 obligations, as applied here
+-----------------------------------------------
+- 4(a) Give recipients a copy of the License: LICENSE carries the verbatim
+  Apache-2.0 text.
+- 4(b) State significant changes: this file, "State changes" above; the adapted
+  skill marks itself in its header comment.
+- 4(c) Retain copyright, patent, trademark and attribution notices from the
+  source: the upstream NOTICE is reproduced verbatim below, and every registered
+  skill body ends with the upstream attribution line.
+- 4(d) If the Work includes a NOTICE file, include a readable copy of its
+  attribution notices that pertain to the derivative work: done below.
+- 6 Trademarks: no trademark rights are granted; the trademark statement above
+  records that.
+- No NOTICE is added or removed from upstream's text; upstream's notice is kept
+  byte-for-byte, and this package's notices are appended after it.
+- Section 3 patent grant and section 5 contribution terms apply automatically to
+  this redistribution; the port ships no compiled binaries, so the binary-linking
+  and third-party license-text obligations for upstream's Go runtime do not arise.
+
+Upstream NOTICE (verbatim, from the pinned commit)
+--------------------------------------------------
 Caveman
 Copyright 2026 Julius Brussee
 
-This package (dsh-caveman) is an unofficial DeepSeek Harness port of
-https://github.com/JuliusBrussee/caveman, pinned at commit
-2e068f735253cce28256744804785f01887d9646 (upstream skill pack 2.2.0).
+Before Caveman 3.0.0, the parts of this repository outside the Engine-linked
+runtime were licensed under the MIT License (see LICENSING.md). Contributions
+made to those parts before 3.0.0 were received under the MIT License and remain
+available under it. Its copyright and permission notice is retained in
+LICENSE-MIT.
 
-The files under skills/ are copied verbatim from the upstream repository at that
-commit (the body of each SKILL.md). The upstream project is licensed under the
-Apache License, Version 2.0; a copy of that license ships as LICENSE in this
-package. Upstream keeps the pre-3.0.0 MIT notice in LICENSE-MIT for historical
-contributions; nothing under skills/ in this package is drawn from the
-engine/proxy/runtime code.
+This product includes third-party software:
 
-Modifications made by this port (Apache-2.0 §4(b) "state changes"):
+- engine/pixel/ is a Go port of pxpipe (https://github.com/teamchong/pxpipe),
+  used under the MIT License.
+  Copyright (c) 2026 claude-image-proxy contributors
 
-- index.js: new file. Registers the upstream skill bodies with the DeepSeek
-  Harness skill registry and APPENDS a "DSH runtime" section to each body at
-  load time. The note states host facts the upstream text assumes differently:
-  DSH has no caveman hook, so the active mode is conversational and is not
-  stored anywhere; status answers must be marked "(not tracked by this host)";
-  usage/savings are unmeasured on this host.
-- package.json, cordis.patch.yml, README.md, test/, scripts/: new files; the DSH
-  bundle layer, packaging, tests and installer. No upstream code.
-- Not ported: the upstream CLI, proxy, engine, MCP server, Go runtime, hooks and
-  the host-specific skills that depend on them (see package.json "caveman").
+- The glyph atlases embedded in engine/pixel/assets/ are rasterized from:
+  - Spleen 5x8, Copyright (c) 2018-2026, Frederic Cambus.
+    BSD 2-Clause License.
+  - GNU Unifont 16.0.04, dual-licensed under the SIL Open Font License 1.1 and
+    the GNU GPL version 2 (or later) with the GNU font-embedding exception.
 
-"Caveman" and Caveman logos are trademarks of Julius Brussee. This package is
-not affiliated with or endorsed by the upstream author; it uses the name
-nominatively to say what it ports, as allowed by upstream's TRADEMARKS.md.
+- browse/ links these MIT-licensed Go modules:
+  - github.com/chromedp/chromedp, Copyright (c) 2016-2025 Kenneth Shaw
+  - github.com/chromedp/cdproto, Copyright (c) 2016-2025 Kenneth Shaw
+  - github.com/chromedp/sysutil, Copyright (c) 2016-2017 Kenneth Shaw
+
+- The runtime binaries and the container image link third-party Go modules
+  under the MIT, BSD-3-Clause and Apache-2.0 licenses. Their license texts, and
+  the Go runtime's, ship with every binary release as
+  THIRD_PARTY_GO_LICENSES.tar.gz and in the image under /licenses/third_party/.
+
+- packages/cli/src/index.ts contains a port, with changes, of Qwen Code
+  0.22.3's MCP server and permission-rule matchers and its tool-name
+  normalization (https://github.com/QwenLM/qwen-code), used under the Apache
+  License, Version 2.0.
+  Copyright 2025 Google LLC
+  Copyright 2025 Qwen
+
+- The @caveman-ai/cli package bundles MIT-licensed npm packages
+  (@clack/prompts, @clack/core, sisteransi, fast-string-width,
+  fast-string-truncated-width, fast-wrap-ansi); see packages/cli/NOTICE.
+
+- extension/fonts/ holds the Geist and Geist Mono fonts,
+  Copyright (c) 2023 Vercel, in collaboration with basement.studio,
+  under the SIL Open Font License 1.1.
+
+Full license texts: engine/pixel/NOTICE, engine/pixel/assets/SPLEEN_LICENSE.txt,
+engine/pixel/assets/UNIFONT_LICENSE.txt, browse/NOTICE, packages/cli/NOTICE, and
+extension/fonts/GEIST_LICENSE.txt.
+
+End of upstream NOTICE.

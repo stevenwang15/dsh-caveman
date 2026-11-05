@@ -63,5 +63,6 @@ echo "installed dsh-caveman@$VERSION into profile \"$PROFILE_NAME\""
 echo "bundles: $("$NODE" -p "JSON.parse(require('fs').readFileSync('$PROFILE/package.json','utf8')).dsh.profile.bundles.join(', ')")"
 echo
 echo "Restart DeepSeek Harness to load the bundle."
-echo "Skills appear in the session catalog as: caveman, ultracave, megacave, caveman-commit, caveman-review, caveman-help, caveman-stats"
+echo "Skills: caveman, ultracave, megacave, caveman-commit, caveman-review, caveman-help, caveman-stats,"
+echo "        caveman-compress, investigate-first, lean-build, migration, safe-refactor, surgical-patch, verify-and-stop"
 echo "Try it in the input box: /caveman  (off again: say \"stop caveman\")"

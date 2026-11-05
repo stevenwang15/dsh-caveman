@@ -1,7 +1,7 @@
 {
   "name": "dsh-caveman",
-  "version": "0.1.0",
-  "description": "DeepSeek Harness 插件：把 caveman（让 agent 少说废话、省 token 的输出风格技能）移植为原生 DSH 技能——caveman / ultracave / megacave 三档语气、caveman-commit 提交信息、caveman-review 代码评审、caveman-help 速查、caveman-stats 用量。技术事实、代码、命令、路径与报错一律原样保留。",
+  "version": "0.2.1",
+  "description": "DeepSeek Harness 插件：把 caveman（让 agent 少说废话、省 token 的输出风格技能）整套移植为原生 DSH 技能——三档语气（caveman/ultracave/megacave）、commit、review、help、stats、compress，外加 6 个 native 工作流纪律技能。技术事实、代码、命令、路径与报错一律原样保留。",
   "type": "module",
   "main": "index.js",
   "files": [
@@ -27,7 +27,10 @@
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "test": "node test/smoke.mjs"
+    "test": "node test/smoke.mjs && node test/dsh-contract.mjs && node test/compress-gate.mjs",
+    "test:smoke": "node test/smoke.mjs",
+    "test:contract": "node test/dsh-contract.mjs",
+    "test:compress": "node test/compress-gate.mjs"
   },
   "dsh": {
     "bundle": {
@@ -46,13 +49,23 @@
       "caveman-commit",
       "caveman-review",
       "caveman-help",
-      "caveman-stats"
+      "caveman-stats",
+      "caveman-compress",
+      "investigate-first",
+      "lean-build",
+      "migration",
+      "safe-refactor",
+      "surgical-patch",
+      "verify-and-stop"
+    ],
+    "adapted": [
+      "caveman-compress：上游用 Python CLI 把文件发给 claude CLI / Anthropic API / OpenAI 兼容端点；本移植改为「当前会话模型就地压缩 + 工作区外备份 + verify-compress.mjs 闸门」，不外发文件、不需要 API key"
     ],
     "notPorted": [
-      "CLI / proxy / engine / MCP（Go 运行时，省的是输入 token；DSH 侧未移植）",
-      "caveman-compress（依赖 Python 脚本 + 外部模型端点）",
+      "CLI / proxy / engine / MCP / shrink（Go 运行时；省的是输入 token，DSH 侧未移植）",
+      "cavecrew（上游依赖 cavecrew-investigator/builder/reviewer 三个 subagent preset，DSH 无同名 preset）",
       "caveman-discover / explore / learn / manage / optimize / setup / evidence-review（依赖 Caveman CLI 与本地实验数据）",
-      "hooks 驱动的模式持久化与 statusline（DSH 无 hooks，改为会话内保持 + 诚实报告）"
+      "hooks 驱动的模式持久化与 statusline（DSH 无 hooks，改为会话内保持 + 诚实报告 (not tracked by this host)）"
     ]
   }
 }

@@ -34,7 +34,15 @@ const ctx = {
 
 mod.apply(ctx)
 
-const EXPECTED = ['caveman', 'ultracave', 'megacave', 'caveman-commit', 'caveman-review', 'caveman-help', 'caveman-stats']
+const EXPECTED = [
+  // output suite
+  'caveman', 'ultracave', 'megacave', 'caveman-commit', 'caveman-review', 'caveman-help', 'caveman-stats',
+  // compression suite
+  'caveman-compress',
+  // native pack
+  'investigate-first', 'lean-build', 'migration', 'safe-refactor', 'surgical-patch', 'verify-and-stop',
+]
+const NATIVE = ['investigate-first', 'lean-build', 'migration', 'safe-refactor', 'surgical-patch', 'verify-and-stop']
 check('registers every caveman skill', registered.length === EXPECTED.length, `got ${registered.length}`)
 for (const name of EXPECTED) {
   check(`registers ${name}`, registered.some((s) => s.name === name))
@@ -84,11 +92,30 @@ for (const skill of registered) {
 }
 
 const voice = registered.find((s) => s.name === 'caveman')?.content ?? ''
+const compress = registered.find((s) => s.name === 'caveman-compress')?.content ?? ''
 check('voice skill says mode is not stored', voice.includes('Mode is conversational here, not stored'))
 check('voice skill marks status as untracked', voice.includes('(not tracked by this host)'))
 check('stats skill refuses to invent savings', (registered.find((s) => s.name === 'caveman-stats')?.content ?? '').includes('Savings stay unknown'))
+check('compress skill states bytes are not tokens', compress.includes('Bytes are not tokens'))
+check(
+  'native skills do not claim a classifier this host lacks',
+  NATIVE.every((name) => (registered.find((s) => s.name === name)?.content ?? '').includes('No classifier, no guardrail runtime')),
+)
 // The upstream bodies talk about Claude Code hooks; that is fine as long as the note this port
 // APPENDS does not promise a hook. Only the appended section is under our control.
+check(
+  'native pack skills carry the shared native-core',
+  NATIVE.every((name) => (registered.find((s) => s.name === name)?.content ?? '').includes('## Shared default (native-core)')),
+)
+check(
+  'non-native skills do not carry the native core',
+  registered
+    .filter((s) => !NATIVE.includes(s.name))
+    .every((s) => !(s.content ?? '').includes('## Shared default (native-core)')),
+)
+check('compress skill names its gate script', compress.includes('scripts/verify-compress.mjs'))
+check('compress skill refuses secrets before reading', compress.includes('Refuse and explain, without reading the file'))
+check('compress skill backs up outside the source tree', compress.includes('.caveman/backups/'))
 check(
   'the appended note never claims a hook this host lacks',
   registered.every((s) => {
@@ -116,7 +143,7 @@ check('package declares Apache-2.0', pkg.license === 'Apache-2.0', pkg.license)
 check('LICENSE ships', existsSync(join(root, 'LICENSE')))
 check('LICENSE is the Apache-2.0 text', readFileSync(join(root, 'LICENSE'), 'utf8').includes('Apache License'))
 check('NOTICE ships', existsSync(join(root, 'NOTICE')))
-check('NOTICE states the modifications', readFileSync(join(root, 'NOTICE'), 'utf8').includes('state changes'))
+check('NOTICE states the modifications', /state changes/i.test(readFileSync(join(root, 'NOTICE'), 'utf8')))
 check('upstream pin recorded', typeof pkg.caveman?.upstreamCommit === 'string' && pkg.caveman.upstreamCommit.length === 40)
 
 const failed = checks.filter((c) => !c.ok)
