@@ -10,7 +10,7 @@
 //
 // Requires the DeepSeek Harness app to be installed. Set DSH_ASAR to point elsewhere.
 // No dependencies: the asar header is parsed by hand.
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 const ASAR = process.env.DSH_ASAR || '/Applications/DeepSeek Harness.app/Contents/Resources/app.asar'
 const SKILL_MODULE = '/dsh/node_modules/@deepseek-ai/dsh-skill/lib/index.js'
@@ -37,6 +37,15 @@ function readAsarEntry(asarPath, entryPath) {
   const offset = Number(node.offset)
   const size = Number(node.size)
   return fd.subarray(dataStart + offset, dataStart + offset + size).toString('utf8')
+}
+
+// This suite can only run where DeepSeek Harness is actually installed. CI runners have no
+// app.asar, so skip there — loudly, and exit 0 so the rest of `npm test` stays meaningful.
+// A corrupt or partially readable asar still fails hard below.
+if (!existsSync(ASAR)) {
+  console.log(`SKIP  dsh-contract: no DeepSeek Harness build at ${ASAR}`)
+  console.log('      Set DSH_ASAR to the app.asar of an installed build to run this suite.')
+  process.exit(0)
 }
 
 let source
