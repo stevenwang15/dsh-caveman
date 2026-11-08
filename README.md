@@ -8,6 +8,16 @@
 >
 > **非官方移植。** "Caveman" 是 Julius Brussee 的商标，本包与上游作者无隶属或背书关系，仅以指称方式（nominative use）说明移植来源。
 
+![dsh-caveman 预览](docs/preview.png)
+
+### 一行安装
+
+```bash
+dsh plugin --profile desktop add github:stevenwang15/dsh-caveman
+```
+
+需要 Node 22+。完整装法、参数与卸载见下文。
+
 ---
 
 ## 装了什么（14 个技能，三组）
@@ -156,3 +166,15 @@ dsh-caveman/
 ```
 
 **同步上游**：把 `skills/<name>/SKILL.md` 与 `skills/native-core.md` 用上游同路径文件覆盖；`caveman-compress` 例外（改造过，需人工合并）。`index.js` 不用改，DSH 说明自动追加。上游 commit 记在 `package.json` 的 `caveman.upstreamCommit`。
+
+## DSH 插件家族
+
+| 插件 | 一句话 |
+| :--- | :--- |
+| [dsh-caveman](https://github.com/stevenwang15/dsh-caveman) | 让 agent 少说废话、多留事实 |
+| [dsh-taste-skill](https://github.com/stevenwang15/dsh-taste-skill) | 前端设计：先定方向，再量，再看 |
+| [dsh-session-workspace](https://github.com/stevenwang15/dsh-session-workspace) | 一个对话，一个独立工作区 |
+
+---
+
+遇到问题或想加功能，请[开 issue](https://github.com/stevenwang15/dsh-caveman/issues/new/choose)。如果这个插件帮到你，给个 ⭐ 能让更多人找到它。
